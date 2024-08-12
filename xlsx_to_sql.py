@@ -2,6 +2,7 @@ import argparse
 import openpyxl # Used for reading from the XLSX file
 import json # Used to parse metadata for comment text
 import os, platform # Used for opening the generated XLSX file
+import send2trash # Used for deleting the XLSX file, so the user can get it back if this was done by accident
 
 # Parse command line arguments
 parser = argparse.ArgumentParser()
@@ -162,7 +163,7 @@ with open(OUTPUT_FILE, 'w') as f:
 
 # Delete the XLSX file
 if DELETE_XLSX:
-  os.remove(INPUT_FILE)
+  send2trash.send2trash(INPUT_FILE)
 
 # Open the created SQL file
 if OPEN_FILE:

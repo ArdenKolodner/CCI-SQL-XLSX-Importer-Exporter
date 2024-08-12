@@ -46,106 +46,112 @@ class XLSXParseError(Exception): pass
 # Load the XLSX file
 workbook = openpyxl.load_workbook(INPUT_FILE)
 
-# Create the SQL file object
-with open(OUTPUT_FILE, 'w') as f:
-  f.write("BEGIN TRANSACTION;\n")
+# Variable to hold contents of the SQL script
+sql_script = ""
 
-  # For each worksheet, create the corresponding table in the SQL script
-  for sheet in workbook.worksheets:
-    table_name = sheet.title
-    log_table_name(f"Extracting table: {table_name}")
 
-    # Collect list of fields in this table
-    fields = []
-    field_metadata = []
-    column = 1
-    cell = sheet.cell(row=1, column=column)
-    while cell.value:
-      field_name = cell.value
-      fields.append(field_name)
+sql_script += "BEGIN TRANSACTION;\n"
 
-      # Extract field metadata
-      if cell.comment:
-        comment_text = cell.comment.text
-        prefix = comment_text[:len(COMMENT_PREFIX)]
-        suffix = comment_text[len(COMMENT_PREFIX):]
+# For each worksheet, create the corresponding table in the SQL script
+for sheet in workbook.worksheets:
+  table_name = sheet.title
+  log_table_name(f"Extracting table: {table_name}")
 
-        if prefix != COMMENT_PREFIX:
-          raise XLSXParseError(f"Comment verification failed: '{comment_text}'")
+  # Collect list of fields in this table
+  fields = []
+  field_metadata = []
+  column = 1
+  cell = sheet.cell(row=1, column=column)
+  while cell.value:
+    field_name = cell.value
+    fields.append(field_name)
 
-        metadata = json.loads(suffix)
-        field_metadata.append(metadata)
-      else:
-        log_field(f"WARNING: No comment found for field {field_name}. Using default type: VARCHAR(255), not primary key.")
-        metadata = DEFAULT_METADATA
-        field_metadata.append(metadata)
+    # Extract field metadata
+    if cell.comment:
+      comment_text = cell.comment.text
+      prefix = comment_text[:len(COMMENT_PREFIX)]
+      suffix = comment_text[len(COMMENT_PREFIX):]
 
-      column += 1
-      cell = sheet.cell(row=1, column=column)
-      log_field(f"Detected field: {field_name} with metadata {metadata}")
-    log_field(f"Detected {len(fields)} fields. The final, empty cell's value's type was: {str(type(cell.value))}")
+      if prefix != COMMENT_PREFIX:
+        raise XLSXParseError(f"Comment verification failed: '{comment_text}'")
 
-    # Create the table
-    f.write(f'CREATE TABLE "{table_name}" (\n')
-
-    primary_key_field = None
-
-    # Add the fields
-    for column, field_name in enumerate(fields):
-      metadata = field_metadata[column]
-      if metadata["pk"]:
-        if primary_key_field is not None:
-          raise XLSXParseError(f"Table {table_name}: multiple primary key fields detected!")
-        
-        primary_key_field = field_name
-
-      # Primary key field doesn't get quotes around its name
-      if primary_key_field == field_name:
-        f.write(f'  {field_name}')
-      else:
-        f.write(f'  "{field_name}"')
-
-      f.write(f' {metadata["type"]}')
-      if metadata["not_null"]: f.write(" NOT NULL")
-      f.write(",\n")
-
-    # Add the primary key
-    if primary_key_field is not None:
-      f.write(f'  PRIMARY KEY ({primary_key_field})\n')
+      metadata = json.loads(suffix)
+      field_metadata.append(metadata)
     else:
-      raise XLSXParseError(f"Table {table_name}: no primary key field detected!")
+      log_field(f"WARNING: No comment found for field {field_name}. Using default type: VARCHAR(255), not primary key.")
+      metadata = DEFAULT_METADATA
+      field_metadata.append(metadata)
 
-    # End the table with close-paren
-    f.write(");\n")
+    column += 1
+    cell = sheet.cell(row=1, column=column)
+    log_field(f"Detected field: {field_name} with metadata {metadata}")
+  log_field(f"Detected {len(fields)} fields. The final, empty cell's value's type was: {str(type(cell.value))}")
 
-    # Insert records into the table
-    for row_index, row_obj in enumerate(sheet.rows):
-      if row_index == 0: continue # Skip the header row
+  # Create the table
+  sql_script += f'CREATE TABLE "{table_name}" (\n'
 
-      # Skip empty rows
-      if not any(cell.value for cell in row_obj):
-        continue
+  primary_key_field = None
 
-      values = []
-      for column_index, field in enumerate(fields):
-        value = sheet.cell(row=row_index+1, column=column_index+1).value # Remember, 1-based indexing!
-        # CCI uses an empty string to indicate NULL, but OpenPyXL uses None
-        if value is None: value = ''
-        value = str(value) # Ensure the value is a string, since Excel likes to auto-format booleans and numbers
+  # Add the fields
+  for column, field_name in enumerate(fields):
+    metadata = field_metadata[column]
+    if metadata["pk"]:
+      if primary_key_field is not None:
+        raise XLSXParseError(f"Table {table_name}: multiple primary key fields detected!")
+      
+      primary_key_field = field_name
 
-        values.append(value)
+    # Primary key field doesn't get quotes around its name
+    if primary_key_field == field_name:
+      sql_script += f'  {field_name}'
+    else:
+      sql_script += f'  "{field_name}"'
 
-      f.write(f'INSERT INTO "{table_name}" VALUES(')
-      for column, value in enumerate(values):
-        if column > 0: f.write(",")
-        if isinstance(value, str): f.write(f"'{value}'")
-        else: f.write(f"{value}")
-      f.write(");\n")
+    sql_script += f' {metadata["type"]}'
+    if metadata["not_null"]: sql_script += " NOT NULL"
+    sql_script += ",\n"
 
-      log_record(f"Record in table {table_name}: {values}")
+  # Add the primary key
+  if primary_key_field is not None:
+    sql_script += f'  PRIMARY KEY ({primary_key_field})\n'
+  else:
+    raise XLSXParseError(f"Table {table_name}: no primary key field detected!")
 
-  # End the file
-  f.write("COMMIT;\n")
+  # End the table with close-paren
+  sql_script += ");\n"
+
+  # Insert records into the table
+  for row_index, row_obj in enumerate(sheet.rows):
+    if row_index == 0: continue # Skip the header row
+
+    # Skip empty rows
+    if not any(cell.value for cell in row_obj):
+      continue
+
+    values = []
+    for column_index, field in enumerate(fields):
+      value = sheet.cell(row=row_index+1, column=column_index+1).value # Remember, 1-based indexing!
+      # CCI uses an empty string to indicate NULL, but OpenPyXL uses None
+      if value is None: value = ''
+      value = str(value) # Ensure the value is a string, since Excel likes to auto-format booleans and numbers
+
+      values.append(value)
+
+    sql_script += f'INSERT INTO "{table_name}" VALUES('
+    for column, value in enumerate(values):
+      if column > 0: sql_script += ","
+      if isinstance(value, str): sql_script += f"'{value}'"
+      else: sql_script += f"{value}"
+    sql_script += ");\n"
+
+    log_record(f"Record in table {table_name}: {values}")
+
+# End the file
+sql_script += "COMMIT;\n"
+
+# Save the SQL file
+with open(OUTPUT_FILE, 'w') as f:
+  f.write(sql_script)
 
 # Open the created SQL file
 if OPEN_FILE:

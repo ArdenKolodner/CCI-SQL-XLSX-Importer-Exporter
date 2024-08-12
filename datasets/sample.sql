@@ -6,7 +6,7 @@ CREATE TABLE "People" (
   PRIMARY KEY (id)
 );
 INSERT INTO "People" VALUES('1','Nicholas','Nick');
-INSERT INTO "People" VALUES('2','John','Johnny');
+INSERT INTO "People" VALUES('2','Lillian','Lily');
 INSERT INTO "People" VALUES('3','Jane','Jenny');
 INSERT INTO "People" VALUES('4','Wenceslas','');
 CREATE TABLE "Rocks" (

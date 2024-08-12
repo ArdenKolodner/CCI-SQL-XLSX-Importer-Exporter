@@ -9,7 +9,7 @@ Change the INPUT_FILE variable in the Python scripts to reflect the file you wis
 This tool is for editing the SQL files in Excel, not a general-purpose tool for converting XLSX data to SQL scripts. If you try to run it on an arbitrary XLSX file, it will probably fail, since the proper data won't be encoded in the comments (see Comments below).
 
 ## End Detection
-When converting an XLSX file back to an SQL file, 
+Do not leave any blank columns in the XLSX file, except at the rightward edge. The tool will stop looking for fields once it sees a blank column, and any further data will be ignored. Blank rows are allowed, though discouraged.
 
 ## Comments
 SQL databases contain information that doesn't have a direct analogue in Excel, like the PRIMARY KEY/NOT NULL constraints. This information needs to be kept along with each field, so this tool stores the info in comments attached to the field headers. Please don't edit or delete those comments!

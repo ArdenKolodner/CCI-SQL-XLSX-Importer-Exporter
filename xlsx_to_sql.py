@@ -122,6 +122,11 @@ with open(OUTPUT_FILE, 'w') as f:
     # Insert records into the table
     for row_index, row_obj in enumerate(sheet.rows):
       if row_index == 0: continue # Skip the header row
+
+      # Skip empty rows
+      if not any(cell.value for cell in row_obj):
+        continue
+
       values = []
       for column_index, field in enumerate(fields):
         value = sheet.cell(row=row_index+1, column=column_index+1).value # Remember, 1-based indexing!
@@ -137,6 +142,8 @@ with open(OUTPUT_FILE, 'w') as f:
         if isinstance(value, str): f.write(f"'{value}'")
         else: f.write(f"{value}")
       f.write(");\n")
+
+      log_record(f"Record in table {table_name}: {values}")
 
   # End the file
   f.write("COMMIT;\n")

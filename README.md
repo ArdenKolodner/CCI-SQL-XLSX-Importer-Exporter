@@ -19,7 +19,7 @@ If you modify a field header, make sure the comment goes with it! For example, t
 Comments on the cells of records are not checked. You can feel free to leave comments there; the tool will ignore them.
 
 # Dependencies
-Python 3 (built-in modules sqlite3, json, os, platform, and sys), and OpenPyXL
+Python 3 and OpenPyXL
 ## Installing Dependencies
 You can install Python [here](https://www.python.org/downloads/), but it may be pre-installed on your machine.
 

@@ -156,3 +156,5 @@ cython_debug/
 datasets/generated.xlsx
 datasets/sample.sql
 datasets/mapping.yml
+datasets/sample.sql
+generated.xlsx

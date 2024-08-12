@@ -8,7 +8,7 @@ CREATE TABLE "People" (
 INSERT INTO "People" VALUES(1,'Nicholas','Nick');
 INSERT INTO "People" VALUES(2,'John','Johnny');
 INSERT INTO "People" VALUES(3,'Jane','Jenny');
-INSERT INTO "People" VALUES(3,'Wenceslas','');
+INSERT INTO "People" VALUES(4,'Wenceslas','');
 CREATE TABLE "Rocks" (
 	id INTEGER NOT NULL, 
 	"Type" VARCHAR(255), 

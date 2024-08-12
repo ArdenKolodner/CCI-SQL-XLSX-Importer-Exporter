@@ -55,10 +55,7 @@ class XLSXParseError(Exception): pass
 workbook = openpyxl.load_workbook(INPUT_FILE)
 
 # Variable to hold contents of the SQL script
-sql_script = ""
-
-
-sql_script += "BEGIN TRANSACTION;\n"
+sql_script = "BEGIN TRANSACTION;\n"
 
 # For each worksheet, create the corresponding table in the SQL script
 for sheet in workbook.worksheets:

@@ -9,6 +9,7 @@ Exporting Excel file to SQL:
 `python xlsx_to_sql.py`
 
 ## Arguments
+### Common
 `-i, --input`: path to input file. By default, this is `./datasets/sample.sql` or `./generated.xlsx` for the SQL-to-XLSX or XLSX-to-SQL scripts respectively. (The assumption is that the script is run from the project folder.)
 `-o, --output`: path to save the generated file as. The default values are the same as `-i` but swapped: `./generated.xlsx` and `./datasets/sample.sql` respectively.
 
@@ -21,6 +22,12 @@ Logging arguments (all default to off):
 `-ltn, --log-table-names`: Display a log message for each table that is loaded/detected.
 `-lr, --log-records`: Display a log message for each record.
 `-lf, --log-fields`: Display a log message for each field in a table.
+
+### XLSX-to-SQL Specific
+Delete input file:
+`-d, --delete-xlsx`: Open the generated file once it's complete.
+`-p, --preserve-xlsx`: Do not open the file.
+Default behavior is to DELETE the XLSX file! This is done so that there aren't 2 competing versions of the data floating around.
 
 # Important Info
 ## Don't Start an XLSX File from Scratch

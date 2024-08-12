@@ -12,6 +12,12 @@ parser.add_argument("-ltn", "--log-table-names", help="Log names of detected tab
 parser.add_argument("-lr", "--log-records", help="Log detected records", action="store_true")
 parser.add_argument("-lf", "--log-fields", help="Log names of detected fields in tables", action="store_true")
 
+output_options = parser.add_argument_group("XLSX file options")
+parser.add_argument("-d", "--delete-xlsx", help="Do not delete the XLSX file", action="store_true")
+parser.add_argument("-p", "--preserve-xlsx", help="Do not delete the XLSX file", action="store_false", dest='delete_xlsx')
+# By default, delete the file at the end, so that there aren't 2 versions of the data
+parser.set_defaults(delete_xlsx=False)
+
 output_options = parser.add_argument_group("Output options")
 output_options.add_argument("-of", "--open-file", help="Automatically open the generated SQL file", action="store_true")
 output_options.add_argument("-nof", "--no-open-file", help="Do not open the generated SQL file", action="store_false", dest='open_file')
@@ -26,6 +32,7 @@ LOG_RECORDS = args.log_records
 LOG_FIELDS = args.log_fields
 
 OPEN_FILE = args.open_file
+DELETE_XLSX = args.delete_xlsx
 
 INPUT_FILE = args.input
 OUTPUT_FILE = args.output
@@ -103,9 +110,9 @@ for sheet in workbook.worksheets:
 
     # Primary key field doesn't get quotes around its name
     if primary_key_field == field_name:
-      sql_script += f'  {field_name}'
+      sql_script += f'\t{field_name}'
     else:
-      sql_script += f'  "{field_name}"'
+      sql_script += f'\t"{field_name}"'
 
     sql_script += f' {metadata["type"]}'
     if metadata["not_null"]: sql_script += " NOT NULL"
@@ -152,6 +159,10 @@ sql_script += "COMMIT;\n"
 # Save the SQL file
 with open(OUTPUT_FILE, 'w') as f:
   f.write(sql_script)
+
+# Delete the XLSX file
+if DELETE_XLSX:
+  os.remove(INPUT_FILE)
 
 # Open the created SQL file
 if OPEN_FILE:

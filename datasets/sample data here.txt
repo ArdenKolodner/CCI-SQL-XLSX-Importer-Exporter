@@ -1,2 +1,3 @@
 By default, the SQL-to-XLSX script will look here for a sample.sql and mapping.yml file.
 The generated XLSX will be in the parent directory of this folder, though.
+The mapping.yml file provided here as an example does not correlate to any actual SalesForce object. It's just to demonstrate what kind of file the script expects. I.e., it could contain errors.

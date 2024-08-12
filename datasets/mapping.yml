@@ -1,0 +1,12 @@
+Insert People:
+  sf_object: People
+  table: People
+  fields:
+    - Name
+    - Nickname
+Insert Rocks:
+  sf_object: Rocks
+  table: Rocks
+  fields:
+    - Type
+    - Origin

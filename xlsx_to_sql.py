@@ -2,7 +2,6 @@ import argparse
 import openpyxl # Used for reading from the XLSX file
 import json # Used to parse metadata for comment text
 import os, platform # Used for opening the generated XLSX file
-import sys # Used for exiting the program
 
 # Parse command line arguments
 parser = argparse.ArgumentParser()
@@ -42,6 +41,8 @@ def log_record(text):
 def log_field(text):
   if LOG_FIELDS: print(text)
 
+class XLSXParseError(Exception): pass
+
 # Load the XLSX file
 workbook = openpyxl.load_workbook(INPUT_FILE)
 
@@ -70,8 +71,7 @@ with open(OUTPUT_FILE, 'w') as f:
         suffix = comment_text[len(COMMENT_PREFIX):]
 
         if prefix != COMMENT_PREFIX:
-          log_field(f"ERROR: Comment verification failed: '{comment_text}'")
-          sys.exit(1)
+          raise XLSXParseError(f"Comment verification failed: '{comment_text}'")
 
         metadata = json.loads(suffix)
         field_metadata.append(metadata)
@@ -95,8 +95,8 @@ with open(OUTPUT_FILE, 'w') as f:
       metadata = field_metadata[column]
       if metadata["pk"]:
         if primary_key_field is not None:
-          print(f"ERROR: table {table_name}: duplicate primary key field specified!")
-          sys.exit(1)
+          raise XLSXParseError(f"Table {table_name}: multiple primary key fields detected!")
+        
         primary_key_field = field_name
 
       # Primary key field doesn't get quotes around its name
@@ -113,8 +113,7 @@ with open(OUTPUT_FILE, 'w') as f:
     if primary_key_field is not None:
       f.write(f'  PRIMARY KEY ({primary_key_field})\n')
     else:
-      print("ERROR: table {table_name}: no primary key field specified!")
-      sys.exit(1)
+      raise XLSXParseError(f"Table {table_name}: no primary key field detected!")
 
     # End the table with close-paren
     f.write(");\n")

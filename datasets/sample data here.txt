@@ -1,0 +1,2 @@
+By default, the SQL-to-XLSX script will look here for a sample.sql and mapping.yml file.
+The generated XLSX will be in the parent directory of this folder, though.

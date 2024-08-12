@@ -16,7 +16,7 @@ output_options = parser.add_argument_group("XLSX file options")
 parser.add_argument("-d", "--delete-xlsx", help="Do not delete the XLSX file", action="store_true")
 parser.add_argument("-p", "--preserve-xlsx", help="Do not delete the XLSX file", action="store_false", dest='delete_xlsx')
 # By default, delete the file at the end, so that there aren't 2 versions of the data
-parser.set_defaults(delete_xlsx=False)
+parser.set_defaults(delete_xlsx=True)
 
 output_options = parser.add_argument_group("Output options")
 output_options.add_argument("-of", "--open-file", help="Automatically open the generated SQL file", action="store_true")

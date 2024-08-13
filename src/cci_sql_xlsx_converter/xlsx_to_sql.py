@@ -66,6 +66,11 @@ def xlsx_to_sql():
 
   # Parse YAML mapping data
   mapping_original = json.loads(workbook.properties.description)
+  # Extract list of tables without mapping data, then remove it from the mapping object
+  tables_without_mapping_data = mapping_original.pop("__cci_sql_xlsx_converter_tables_without_mapping_data__", None)
+  if tables_without_mapping_data is None:
+    raise XLSXParseError("Mapping data does not contain list of tables without mapping data (this list must be present even if empty)")
+
   # Create a dictionary recording whether each table's mapping data has been used.
   # This is so we can print a warning if a table's mapping data is not used.
   # This could just mean the table was deleted in the XLSX file, but it also could mean
@@ -184,6 +189,8 @@ def xlsx_to_sql():
       table_mappings_preserved[block_name] = True
       mapping_new[block_name] = mapping_original[block_name]
       mapping_new[block_name]['fields'] = mapping_fields
+    elif table_name in tables_without_mapping_data:
+      pass # Allow the new mapping data to lack a block for this table, since there was none in the original mapping
     else:
       log_warning(f"WARNING: Mapping data for table {table_name} not found. Adding default data.")
       mapping_new[block_name] = {'table': table_name, 'fields': mapping_fields}

@@ -71,16 +71,23 @@ def sql_to_xlsx():
   workbook = openpyxl.Workbook()
   workbook.remove(workbook.active) # Remove the default worksheet
 
+  # Keep a list of which tables have no mapping data. This way, when the mapping data is loaded, we know not to create default data for them.
+  tables_without_mapping_data = []
+
   # Save contents of YML file within the workbook's description
   with open(INPUT_YAML_FILE, 'r') as f:
     mapping = yaml.safe_load(f)
-    workbook.properties.description = json.dumps(mapping, default=serialize_date)
 
   # Create a worksheet for each table
   for table in tables:
     table_name = table[0]
     log_table_name(f"Creating worksheet for table: {table_name}")
     worksheet = workbook.create_sheet(table_name)
+
+    # Check if the table has mapping data
+    block_name = 'Insert ' + table_name
+    if block_name not in mapping.keys(): 
+      tables_without_mapping_data.append(table_name)
 
     # Create header line
     fields = cur.execute(f"PRAGMA table_info('{table_name}')")
@@ -104,6 +111,11 @@ def sql_to_xlsx():
 
       log_record(f"Table {table_name}: {col}")
 
+  mapping["__cci_sql_xlsx_converter_tables_without_mapping_data__"] = tables_without_mapping_data
+
+  # Save mapping data to the workbook's description
+  workbook.properties.description = json.dumps(mapping, default=serialize_date)
+  # Save file
   workbook.save(OUTPUT_FILE)
 
   # Open the created workbook

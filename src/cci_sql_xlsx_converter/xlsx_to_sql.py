@@ -160,7 +160,12 @@ def xlsx_to_sql():
         value = sheet.cell(row=row_index+1, column=column_index+1).value # Remember, 1-based indexing!
         # CCI uses an empty string to indicate NULL, but OpenPyXL uses None
         if value is None: value = ''
-        value = str(value) # Ensure the value is a string, since Excel likes to auto-format booleans and numbers
+
+        target_type = field_metadata[column_index]["type"]
+        if target_type == "INTEGER":
+          value = int(value)
+        else:
+          value = str(value) # Ensure the value is a string, since Excel likes to auto-format booleans and numbers
 
         values.append(value)
 

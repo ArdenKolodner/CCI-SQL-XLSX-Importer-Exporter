@@ -2,7 +2,7 @@ import argparse
 import openpyxl # Used for reading from the XLSX file
 import json # Used to parse metadata in cell comments and file description, because it doesn't rely on whitespace like YAML
 import yaml # Used for saving CCI mapping data saved in the XLSX file's description
-import os, platform # Used for opening the generated XLSX file
+import os, platform, subprocess # Used for opening the generated XLSX file
 import send2trash # Used for deleting the XLSX file, so the user can get it back if this was done by accident
 
 def xlsx_to_sql():
@@ -220,7 +220,8 @@ def xlsx_to_sql():
     if platform.system() == "Windows":
       os.startfile(OUTPUT_SQL_FILE)
     else:
-      os.system(f"open {OUTPUT_SQL_FILE}")
+      # subprocess.call() is safer than os.system(), as it prevents injection attacks. Of course, if an attacker can run this script, they probably have command-line access already, but why take the risk?
+      subprocess.call(('open', OUTPUT_SQL_FILE))
 
 if __name__ == "__main__":
   xlsx_to_sql()

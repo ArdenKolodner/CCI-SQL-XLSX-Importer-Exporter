@@ -4,7 +4,7 @@ import openpyxl # Used for creating the XLSX file
 from openpyxl.comments import Comment # Used for saving metadata about each field
 import json # Used for storing metadata in cell comments and file description, because it doesn't rely on whitespace like YAML
 import yaml # Used to parse the mapping file
-import os, platform # Used for opening the generated XLSX file
+import os, platform, subprocess # Used for opening the generated XLSX file
 import datetime # Used for storing dates from the mapping data
 
 def sql_to_xlsx():
@@ -123,7 +123,8 @@ def sql_to_xlsx():
     if platform.system() == "Windows":
       os.startfile(OUTPUT_FILE)
     else:
-      os.system(f"open {OUTPUT_FILE}")
+      # subprocess.call() is safer than os.system(), as it prevents injection attacks. Of course, if an attacker can run this script, they probably have command-line access already, but why take the risk?
+      subprocess.call(('open', OUTPUT_FILE))
 
 if __name__ == "__main__":
   sql_to_xlsx()

@@ -56,6 +56,14 @@ def xlsx_to_sql():
   def log_warning(text):
     if DISPLAY_WARNINGS: print(text)
 
+  # Escape any single quotes in a string
+  def escape_string_sql(string):
+    if not isinstance(string, str):
+      return string
+    
+    esc = string.replace("'", "''")
+    return esc
+
   class XLSXParseError(Exception): pass
 
   # Load the XLSX file
@@ -101,7 +109,7 @@ def xlsx_to_sql():
     log_field(f"Detected {len(fields)} fields. The final, empty cell's value's type was: {str(type(cell.value))}")
 
     # Create the table
-    sql_script += f'CREATE TABLE "{table_name}" (\n'
+    sql_script += f'CREATE TABLE "{escape_string_sql(table_name)}" (\n'
 
     primary_key_field = None
 
@@ -116,9 +124,9 @@ def xlsx_to_sql():
 
       # Primary key field doesn't get quotes around its name
       if primary_key_field == field_name:
-        sql_script += f'\t{field_name}'
+        sql_script += f'\t{escape_string_sql(field_name)}'
       else:
-        sql_script += f'\t"{field_name}"'
+        sql_script += f'\t"{escape_string_sql(field_name)}"'
         mapping_fields.append(field_name)
 
       sql_script += f' {metadata["type"]}'
@@ -127,7 +135,7 @@ def xlsx_to_sql():
 
     # Add the primary key
     if primary_key_field is not None:
-      sql_script += f'\tPRIMARY KEY ({primary_key_field})\n'
+      sql_script += f'\tPRIMARY KEY ({escape_string_sql(primary_key_field)})\n'
     else:
       raise XLSXParseError(f"Table {table_name}: no primary key field detected!")
 
@@ -156,14 +164,14 @@ def xlsx_to_sql():
 
         values.append(value)
 
-      sql_script += f'INSERT INTO "{table_name}" VALUES('
+      sql_script += f'INSERT INTO "{escape_string_sql(table_name)}" VALUES('
       for column, value in enumerate(values):
         if column > 0: sql_script += ","
-        if isinstance(value, str): sql_script += f"'{value}'"
-        else: sql_script += f"{value}"
+        if isinstance(value, str): sql_script += f"'{escape_string_sql(value)}'"
+        else: sql_script += f"{escape_string_sql(value)}"
       sql_script += ");\n"
 
-      log_record(f"Record in table {table_name}: {values}")
+      log_record(f"Record in table {escape_string_sql(table_name)}: {escape_string_sql(values)}")
 
   # End the SQL file
   sql_script += "COMMIT;\n"

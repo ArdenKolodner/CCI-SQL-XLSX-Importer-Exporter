@@ -44,12 +44,6 @@ def sql_to_xlsx():
   def log_field(text):
     if LOG_FIELDS: print(text)
 
-  # By default, JSON cannot serialize dates, so we just convert it to a string
-  def serialize_date(obj):
-    if isinstance(obj, datetime.date): 
-          return obj.isoformat() 
-    raise TypeError("Type not serializable") 
-
   with open(INPUT_FILE, 'r') as f:
     sql_script = f.read()
 

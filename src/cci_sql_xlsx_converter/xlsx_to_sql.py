@@ -127,7 +127,7 @@ def xlsx_to_sql():
 
     # Add the primary key
     if primary_key_field is not None:
-      sql_script += f'  PRIMARY KEY ({primary_key_field})\n'
+      sql_script += f'\tPRIMARY KEY ({primary_key_field})\n'
     else:
       raise XLSXParseError(f"Table {table_name}: no primary key field detected!")
 

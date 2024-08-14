@@ -29,8 +29,8 @@ Logging arguments (all default to off):
 
 ### XLSX-to-SQL Specific
 Delete input file:
-`-d, --delete-xlsx`: Open the generated file once it's complete.
-`-p, --preserve-xlsx`: Do not open the file.
+`-d, --delete-xlsx`: Delete the XLSX file after the new SQL file is generated.
+`-p, --preserve-xlsx`: Do not delete the file.
 Default behavior is to DELETE the XLSX file! This is done so that there aren't 2 competing versions of the data floating around.
 
 # Important Info/Warnings

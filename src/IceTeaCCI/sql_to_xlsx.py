@@ -1,12 +1,12 @@
 import argparse # Used for parsing command line arguments
+import sys # Used for accessing command line arguments
 import sqlite3 # Used for running the SQL script
 import openpyxl # Used for creating the XLSX file
 from openpyxl.comments import Comment # Used for saving metadata about each field
 import json # Used for storing metadata in cell comments and file description, because it doesn't rely on whitespace like YAML
 import os, platform, subprocess # Used for opening the generated XLSX file
 
-def sql_to_xlsx():
-
+def sql_to_xlsx(arglist=sys.argv):
   # Parse command line arguments
   parser = argparse.ArgumentParser()
   parser.add_argument("-i", "--input", help="Path to the SQL script to convert", default="./datasets/sample.sql")
@@ -22,7 +22,7 @@ def sql_to_xlsx():
   # By default, open the file at the end so user can edit data
   parser.set_defaults(open_file=True)
 
-  args = parser.parse_args()
+  args = parser.parse_args(arglist)
 
   # Output options
   LOG_TABLE_NAMES = args.log_table_names

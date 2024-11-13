@@ -22,9 +22,10 @@ Repo = "https://github.com/ArdenKolodner/CCI-SQL-XLSX-Importer-Exporter"
 
 [project.scripts]
 dataset_to_excel = "IceTeaCCI:sql_to_xlsx.sql_to_xlsx"
-excel_to_dataset = "IceTeaCCI:xlsx_to_sql.xlsx_to_sql"
 ds2xl = "IceTeaCCI:sql_to_xlsx.sql_to_xlsx"
+excel_to_dataset = "IceTeaCCI:xlsx_to_sql.xlsx_to_sql"
 xl2ds = "IceTeaCCI:xlsx_to_sql.xlsx_to_sql"
+icetea = "IceTeaCCI:entrypoint.entry_icetea"
 
 [build-system]
 requires = ["hatchling"]

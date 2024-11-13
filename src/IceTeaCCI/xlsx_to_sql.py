@@ -1,10 +1,11 @@
-import argparse
+import argparse # Used for parsing command line arguments
+import sys # Used for accessing command line arguments
 import openpyxl # Used for reading from the XLSX file
 import json # Used to parse metadata in cell comments and file description, because it doesn't rely on whitespace like YAML
 import os, platform, subprocess # Used for opening the generated XLSX file
 import send2trash # Used for deleting the XLSX file, so the user can get it back if this was done by accident
 
-def xlsx_to_sql():
+def xlsx_to_sql(arglist=sys.argv):
   # Parse command line arguments
   parser = argparse.ArgumentParser()
   parser.add_argument("-i", "--input", help="Path to the XLSX script to convert", default="./generated.xlsx")
@@ -28,7 +29,7 @@ def xlsx_to_sql():
   # By default, don't open the file at the end: assume the user will manually do that when using the file in CCI
   parser.set_defaults(open_file=False)
 
-  args = parser.parse_args()
+  args = parser.parse_args(arglist)
 
   # Output options
   LOG_TABLE_NAMES = args.log_table_names

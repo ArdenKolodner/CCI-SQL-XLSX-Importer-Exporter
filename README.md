@@ -8,9 +8,9 @@ First make sure you have Python 3 and pip. You can install Python [here](https:/
 Then run `pip install cci_sql_xlsx_converter` to install the tool. All done!
 
 # Usage
-Importing into Excel: run either the `dataset_to_excel` or `ds2xl` command from the command line
+To import into Excel, run `icetea in`. To export back to SQL, run `icetea out`.
 
-Exporting Excel file to SQL: use either `excel_to_dataset` or `xl2ds`
+Legacy commands: You can also use `dataset_to_excel` or `ds2xl` to import, and `excel_to_dataset` or `xl2ds` to export.
 
 ## Arguments
 ### Common

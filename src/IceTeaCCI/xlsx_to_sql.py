@@ -5,7 +5,7 @@ import json # Used to parse metadata in cell comments and file description, beca
 import os, platform, subprocess # Used for opening the generated XLSX file
 import send2trash # Used for deleting the XLSX file, so the user can get it back if this was done by accident
 
-def xlsx_to_sql(arglist=sys.argv):
+def xlsx_to_sql(arglist=sys.argv[1:]):
   # Parse command line arguments
   parser = argparse.ArgumentParser()
   parser.add_argument("-i", "--input", help="Path to the XLSX script to convert", default="./generated.xlsx")

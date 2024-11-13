@@ -6,7 +6,7 @@ from openpyxl.comments import Comment # Used for saving metadata about each fiel
 import json # Used for storing metadata in cell comments and file description, because it doesn't rely on whitespace like YAML
 import os, platform, subprocess # Used for opening the generated XLSX file
 
-def sql_to_xlsx(arglist=sys.argv):
+def sql_to_xlsx(arglist=sys.argv[1:]):
   # Parse command line arguments
   parser = argparse.ArgumentParser()
   parser.add_argument("-i", "--input", help="Path to the SQL script to convert", default="./datasets/sample.sql")

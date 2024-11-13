@@ -74,6 +74,7 @@ def sql_to_xlsx():
       
       # Write header into table
       cell = worksheet.cell(row=1, column=i+1) # OpenPyXl uses 1-based indexing!
+      cell.number_format = '@' # All field names are strings
       cell.value = field[1]
 
       # Prepare header metadata

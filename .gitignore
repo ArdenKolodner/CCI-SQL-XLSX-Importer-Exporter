@@ -161,3 +161,6 @@ datasets/sample.sql
 generated.xlsx
 datasets/sample.sql
 new_yaml.yml
+
+# VSCode
+**/.vscode/

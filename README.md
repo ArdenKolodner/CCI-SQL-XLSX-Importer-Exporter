@@ -8,30 +8,41 @@ First make sure you have Python 3 and pip. You can install Python [here](https:/
 Then run `pip install IceTeaCCI` to install the tool. All done!
 
 # Usage
-To import into Excel, run `icetea in`. To export back to SQL, run `icetea out`.
+To import SQL data into Excel, run `icetea in`. To export it from Excel back to SQL, run `icetea out`.
 
 Legacy commands: You can also use `dataset_to_excel` or `ds2xl` to import, and `excel_to_dataset` or `xl2ds` to export.
 
 ## Arguments
 ### Common
 `-i, --input`: path to input file. By default, this is `./datasets/sample.sql` or `./generated.xlsx` for the SQL-to-XLSX or XLSX-to-SQL scripts respectively. (The assumption is that the script is run from the project folder.)
+
 `-o, --output`: path to save the generated file as. The default values are the same as `-i` but swapped: `./generated.xlsx` and `./datasets/sample.sql` respectively.
 
 Open output file:
+
 `-of, --open-file`: Open the generated file once it's complete.
+
 `-nof, --no-open-file`: Do not open the file.
-Default behavior is to open the generated XLSX file, but not to open the generated SQL/YML files.
+
+Default behavior is to open the generated XLSX file, but not to open the generated SQL file.
 
 Logging arguments (all default to off):
+
 `-ltn, --log-table-names`: Display a log message for each table that is loaded/detected.
+
 `-lr, --log-records`: Display a log message for each record.
+
 `-lf, --log-fields`: Display a log message for each field in a table.
+
 `-sw, --suppress-warnings`: Prevent warning messages from appearing.
 
 ### XLSX-to-SQL Specific
 Delete input file:
+
 `-d, --delete-xlsx`: Delete the XLSX file after the new SQL file is generated.
+
 `-p, --preserve-xlsx`: Do not delete the file.
+
 Default behavior is to DELETE the XLSX file! This is done so that there aren't 2 competing versions of the data floating around.
 
 # Important Info/Warnings

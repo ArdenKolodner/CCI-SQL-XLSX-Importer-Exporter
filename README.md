@@ -24,7 +24,7 @@ Open output file:
 
 `-nof, --no-open-file`: Do not open the file.
 
-Default behavior is to open the generated XLSX file, but not to open the generated SQL file.
+Default behavior is to open the generated XLSX file (`icetea in`), but not to open the generated SQL file (`icetea out`).
 
 Logging arguments (all default to off):
 

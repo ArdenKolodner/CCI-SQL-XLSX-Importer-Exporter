@@ -47,7 +47,7 @@ Default behavior is to DELETE the XLSX file! This is done so that there aren't 2
 
 # Important Info/Warnings
 ## Don't Rename Sheets or Fields
-The names of the worksheets in the Excel spreadsheet are linked to the names of the tables, and the headers of each column are linked to the field names. If you want to change the name of a table or field, do it in SalesForce, not Excel. However, you can safely re-order columns or sheets.
+The names of the worksheets in the Excel spreadsheet are linked to the names of the tables, and the headers of each column are linked to the field names. If you want to change the name of a table or field, do it in Salesforce, not Excel. However, you can safely re-order columns or sheets.
 
 ## Don't Start an XLSX File from Scratch
 This tool is for editing the SQL files in Excel, not a general-purpose tool for converting XLSX data to SQL scripts. If you try to run it on an arbitrary XLSX file, it will probably fail, since the proper data won't be encoded in the comments or description (see Comments and Description below).

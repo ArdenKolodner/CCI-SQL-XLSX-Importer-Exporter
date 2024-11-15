@@ -165,9 +165,16 @@ def xlsx_to_sql(arglist=sys.argv[1:]):
 
       values = []
       for column_index, field in enumerate(fields):
-        value = sheet.cell(row=row_index+1, column=column_index+1).value # Remember, 1-based indexing!
+        cell = sheet.cell(row=row_index+1, column=column_index+1) # Remember, 1-based indexing!
+        value = cell.value
+
         # CCI uses an empty string to indicate NULL, but OpenPyXL uses None
         if value is None: value = ''
+
+        # CCI stores data, including dates, as strings. For dates already present in the original SQL file, this is handled correctly.
+        # But for dates in fields that were previously empty, we need to convert them to strings.
+        if cell.is_date:
+          value = cell.value.strftime("%Y-%m-%d")
 
         target_type = field_metadata[column_index]["type"]
         if target_type == "INTEGER":
